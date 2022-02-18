@@ -8,6 +8,9 @@ namespace TutorialTestProject
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        
+        //sprites
+        private Texture2D playerSpriteSheet;
 
         public Game1()
         {
@@ -28,8 +31,8 @@ namespace TutorialTestProject
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            
-            
+            playerSpriteSheet = Content.Load<Texture2D>("character-animations");
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -48,8 +51,10 @@ namespace TutorialTestProject
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
-
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(playerSpriteSheet, new Vector2(0,0),Color.White);
+            _spriteBatch.End();
+            
             base.Draw(gameTime);
         }
     }
