@@ -89,14 +89,14 @@ namespace TutorialTestProject
             
             //Create the UI
             MenuPanel.Push();
-            if (Button.Put("TEST HAPPY FUN TIME").Clicked)
+            if (Button.Put("Show Debug").Clicked)
             {
                 _showFun = !_showFun;
             }
 
             if (_showFun)
             {
-                Label.Put($"{playerPos.X} , {playerPos.Y}");
+                Label.Put($"Player Position: {playerPos.X} , {playerPos.Y}");
             }
 
             if (Button.Put("QUIT").Clicked)
