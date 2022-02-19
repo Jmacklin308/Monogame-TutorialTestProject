@@ -16,11 +16,11 @@ namespace TutorialTestProject
         private Vector2 playerPos;
         private float playerSpeed;
         
-        
         //gui
         private IMGUI _ui;
-        
+        bool _showFun = false;
 
+        
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -33,7 +33,7 @@ namespace TutorialTestProject
             // TODO: Add your initialization logic here
 
             playerPos = new Vector2(_graphics.PreferredBackBufferWidth * 0.5f, _graphics.PreferredBackBufferHeight * 0.5f);
-            playerSpeed = 10.0f;
+            playerSpeed = 30.0f;
 
             base.Initialize();
         }
@@ -56,10 +56,28 @@ namespace TutorialTestProject
         protected override void Update(GameTime gameTime)
         {
             CheckPlayerInput((float)gameTime.ElapsedGameTime.TotalSeconds);
+            KeepPlayerInBounds(gameTime);
             CallMenu(gameTime);
 
             //core update (dont mess with this)
             base.Update(gameTime);
+        }
+
+        private void KeepPlayerInBounds(GameTime gameTime)
+        { 
+      
+            //check and keep player in window bounds
+            if (playerPos.X > _graphics.PreferredBackBufferWidth - playerSpriteSheet.Width)
+                playerPos.X = _graphics.PreferredBackBufferWidth - playerSpriteSheet.Width;
+            else if (playerPos.X < 0.0f)
+                playerPos.X = 0.0f;
+
+
+            if (playerPos.Y > _graphics.PreferredBackBufferHeight - playerSpriteSheet.Height)
+                playerPos.Y = _graphics.PreferredBackBufferHeight - playerSpriteSheet.Height;
+            else if (playerPos.Y < 0.0f)
+                playerPos.Y = 0.0f;
+
         }
 
         private void CallMenu(GameTime gametime)
@@ -67,8 +85,6 @@ namespace TutorialTestProject
             //Call update setup at start
             GuiHelper.UpdateSetup(gametime);
             _ui.UpdateAll(gametime);
-            
-            bool _showFun = false;
             
             
             //Create the UI
@@ -80,7 +96,7 @@ namespace TutorialTestProject
 
             if (_showFun)
             {
-                Label.Put("This is fun!!!");
+                Label.Put($"{playerPos.X} , {playerPos.Y}");
             }
 
             if (Button.Put("QUIT").Clicked)
@@ -101,7 +117,6 @@ namespace TutorialTestProject
               
             var keyboardState = Keyboard.GetState();
             var gamepadState = GamePad.GetState(PlayerIndex.One);
-            
             //keyboard input
             if (keyboardState.IsKeyDown(Keys.W))
                 playerPos.Y -= playerSpeed * totalSeconds;
@@ -130,8 +145,6 @@ namespace TutorialTestProject
                 _ui.Draw(gameTime);
                 //draw player
                 _spriteBatch.Draw(playerSpriteSheet, playerPos,Color.White);
-                
-            
             
             _spriteBatch.End();
             
