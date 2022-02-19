@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Apos.Gui;
+using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -13,6 +15,11 @@ namespace TutorialTestProject
         private Texture2D playerSpriteSheet;
         private Vector2 playerPos;
         private float playerSpeed;
+        
+        
+        //gui
+        private IMGUI _ui;
+        
 
         public Game1()
         {
@@ -33,18 +40,60 @@ namespace TutorialTestProject
 
         protected override void LoadContent()
         {
+            //apos GUI setup
+            FontSystem fontSystem = FontSystemFactory.Create(GraphicsDevice);
+            fontSystem.AddFont(TitleContainer.OpenStream($"{Content.RootDirectory}/DroidSans.ttf"));
+            
+            GuiHelper.Setup(this, fontSystem);
+            _ui = new IMGUI();
+            
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            //draw player
             playerSpriteSheet = Content.Load<Texture2D>("character-animations");
         }
 
         protected override void Update(GameTime gameTime)
         {
-
             CheckPlayerInput((float)gameTime.ElapsedGameTime.TotalSeconds);
+            CallMenu(gameTime);
 
+            //core update (dont mess with this)
             base.Update(gameTime);
+        }
+
+        private void CallMenu(GameTime gametime)
+        {
+            //Call update setup at start
+            GuiHelper.UpdateSetup(gametime);
+            _ui.UpdateAll(gametime);
+            
+            bool _showFun = false;
+            
+            
+            //Create the UI
+            MenuPanel.Push();
+            if (Button.Put("TEST HAPPY FUN TIME").Clicked)
+            {
+                _showFun = !_showFun;
+            }
+
+            if (_showFun)
+            {
+                Label.Put("This is fun!!!");
+            }
+
+            if (Button.Put("QUIT").Clicked)
+            {
+                Exit();
+            }
+
+            MenuPanel.Pop();
+            
+            //clean up
+            GuiHelper.UpdateCleanup();
+            
+
         }
 
         private void CheckPlayerInput(float totalSeconds)
@@ -76,9 +125,18 @@ namespace TutorialTestProject
             GraphicsDevice.Clear(Color.WhiteSmoke);
 
             _spriteBatch.Begin();
-            _spriteBatch.Draw(playerSpriteSheet, playerPos,Color.White);
+            
+                //draw gui
+                _ui.Draw(gameTime);
+                //draw player
+                _spriteBatch.Draw(playerSpriteSheet, playerPos,Color.White);
+                
+            
+            
             _spriteBatch.End();
             
+            
+            //base draw (dont mess with this!)
             base.Draw(gameTime);
         }
     }

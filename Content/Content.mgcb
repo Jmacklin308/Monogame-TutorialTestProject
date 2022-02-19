@@ -73,6 +73,9 @@
 /processorParam:TextureFormat=Color
 /build:color-palette.png
 
+#begin DroidSans.ttf
+/copy:DroidSans.ttf
+
 #begin drones.png
 /importer:TextureImporter
 /processor:TextureProcessor
